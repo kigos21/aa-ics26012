@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,11 +18,35 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        {/* NAVBAR */}
         <header>
-          <Navbar />
+          <nav className="bg-blue-50">
+            <ul className="flex justify-center gap-12 px-8 py-4">
+              <li>
+                <Link href="/" className="hover:text-blue-600">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link href="/sjf" className="hover:text-blue-600">
+                  Shortest Job First
+                </Link>
+              </li>
+              <li>
+                <Link href="" className="hover:text-blue-600">
+                  Preemptive Priority
+                </Link>
+              </li>
+              <li>
+                <Link href="" className="hover:text-blue-600">
+                  Scan
+                </Link>
+              </li>
+            </ul>
+          </nav>
         </header>
-        {children}
-        <footer></footer>
+
+        <main className="px-[15%] py-8">{children}</main>
       </body>
     </html>
   );
