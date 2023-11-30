@@ -2,16 +2,21 @@
 
 import { FormEvent, useEffect, useState } from "react";
 
+// define SJFProcess type, an object with AT and BT
 type SJFProcess = { AT: string; BT: string };
 
 export default function SJF() {
+  // store these variables as state
   const [numOfProcess, setNumOfProcess] = useState<string>();
   const [processes, setProcesses] = useState<SJFProcess[]>([]);
 
+  // everytime the processes[] change, console.log the array
   useEffect(() => {
     console.log(processes);
   }, [processes]);
 
+  // after clicking the OK button, populate the proccesses[] with
+  // empty SJFProcess object
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(`Number of processses: ${numOfProcess}`);
