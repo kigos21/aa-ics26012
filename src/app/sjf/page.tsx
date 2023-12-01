@@ -3,28 +3,34 @@
 import { FormEvent, useEffect, useState } from "react";
 
 // define SJFProcess type, an object with AT and BT
-type SJFProcess = { AT: string; BT: string };
+type SJFProcess = {
+  name: string;
+  at: string;
+  bt: string;
+  wt: number;
+  tt: number;
+};
 
 export default function SJF() {
   // store these variables as state
-  const [numOfProcess, setNumOfProcess] = useState<string>();
+  const [numOfProcess, setNumOfProcess] = useState<string>("");
   const [processes, setProcesses] = useState<SJFProcess[]>([]);
-
-  // everytime the processes[] change, console.log the array
-  useEffect(() => {
-    console.log(processes);
-  }, [processes]);
 
   // after clicking the OK button, populate the proccesses[] with
   // empty SJFProcess object
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(`Number of processses: ${numOfProcess}`);
+    const n = Number(numOfProcess);
+
+    if (n < 2 || n > 9) {
+      alert("Please enter minimum of 2, maximum of 9 only.");
+      return;
+    }
 
     const newProcesses: SJFProcess[] = [];
     const j = Number(numOfProcess);
     for (let i = 0; i < j; i++) {
-      newProcesses.push({ AT: "", BT: "" });
+      newProcesses.push({ name: `P${i}`, at: "", bt: "", wt: 0, tt: 0 });
     }
 
     setProcesses(newProcesses);
@@ -33,7 +39,7 @@ export default function SJF() {
   const handleATChange = (i: number, value: string): void => {
     const newProcesses = processes.map((process, index) => {
       if (index === i) {
-        return { ...process, AT: value };
+        return { ...process, at: value };
       }
 
       return process;
@@ -45,13 +51,61 @@ export default function SJF() {
   const handleBTChange = (i: number, value: string): void => {
     const newProcesses = processes.map((process, index) => {
       if (index === i) {
-        return { ...process, BT: value };
+        return { ...process, bt: value };
       }
 
       return process;
     });
 
     setProcesses(newProcesses);
+  };
+
+  const calculateSJF = () => {
+    // Parse arrival times and burst times as integers
+    const parsedProcesses = processes.map((process) => ({
+      ...process,
+      at: Number(process.at),
+      bt: Number(process.bt),
+    }));
+
+    // Sort processes based on arrival time
+    const sortedProcesses = parsedProcesses.sort((a, b) => a.at - b.at);
+
+    // Initialize variables for turnaround time and waiting time
+    let currentTime = 0;
+    let scheduledQueue = [];
+    let waitingQueue = [];
+
+    while (scheduledQueue.length !== processes.length) {
+      // prepare waiting queue by pushing the process with arrival time less than or equal the current time
+      // and popping the process from the sorted processes to avoid duplication
+      let i = 0;
+      while (i < sortedProcesses.length) {
+        if (sortedProcesses[i].at <= currentTime) {
+          waitingQueue.push(sortedProcesses.at(i));
+          sortedProcesses.splice(i, 1);
+          continue; // we continue and not increment index, because items will shift to the left after popping the item at index [i]
+        }
+
+        i += 1;
+      }
+
+      // if waiting queue is empty, increment time and go back to while loop start
+      if (waitingQueue.length === 0) {
+        currentTime += 1;
+        continue;
+      }
+
+      // sort waiting queue based on process.bt
+      waitingQueue.sort((a, b) => a!!.bt - b!!.bt);
+
+      // select the process with lowest BT, and set the time += BT since not preemptive
+      let selectProcess = waitingQueue[0]!!;
+      scheduledQueue.push(selectProcess);
+      waitingQueue.splice(0, 1);
+
+      currentTime += selectProcess.bt;
+    }
   };
 
   return (
@@ -82,25 +136,36 @@ export default function SJF() {
         <p className="font-bold">Arrival Time</p>
         <p className="font-bold">Burst Time</p>
       </div>
+
       {processes.map((process, i) => (
-        <form key={i} action="" className="my-2 grid grid-cols-3">
+        <div key={i} className="my-2 grid grid-cols-3">
           <p>P{i}</p>
           <input
             type="number"
             className="remove_arrow w-1/2 rounded-md border px-2"
             placeholder={`AT for P${i}`}
-            value={processes[i].AT}
+            value={processes[i].at}
             onChange={(e) => handleATChange(i, e.target.value)}
           />
           <input
             type="number"
             className="remove_arrow w-1/2 rounded-md border px-2"
             placeholder={`BT for P${i}`}
-            value={processes[i].BT}
+            value={processes[i].bt}
             onChange={(e) => handleBTChange(i, e.target.value)}
           />
-        </form>
+        </div>
       ))}
+
+      {processes.length > 0 && (
+        <button
+          type="button"
+          className="rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-700"
+          onClick={calculateSJF}
+        >
+          Calculate
+        </button>
+      )}
     </>
   );
 }
