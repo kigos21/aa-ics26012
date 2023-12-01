@@ -33,12 +33,12 @@ export default function RootLayout({
                 </Link>
               </li>
               <li>
-                <Link href="" className="hover:text-blue-600">
+                <Link href="/priority" className="hover:text-blue-600">
                   Preemptive Priority
                 </Link>
               </li>
               <li>
-                <Link href="" className="hover:text-blue-600">
+                <Link href="/scan" className="hover:text-blue-600">
                   Scan
                 </Link>
               </li>
