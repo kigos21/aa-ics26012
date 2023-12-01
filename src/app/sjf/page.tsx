@@ -132,6 +132,9 @@ export default function SJF() {
     // calculate waiting times and turnaround times
     let time = scheduledQueue[0].at;
     for (let process of scheduledQueue) {
+      if (time < process.at) {
+        time = process.at;
+      }
       process.wt = time - process.at;
       time += process.bt;
       process.tt = time - process.at;
@@ -181,6 +184,7 @@ export default function SJF() {
             <p>P{i}</p>
             <input
               type="number"
+              min={0}
               required
               className="remove_arrow w-1/2 rounded-md border px-2"
               placeholder={`AT for P${i}`}
@@ -189,6 +193,7 @@ export default function SJF() {
             />
             <input
               type="number"
+              min={0}
               required
               className="remove_arrow w-1/2 rounded-md border px-2"
               placeholder={`BT for P${i}`}
