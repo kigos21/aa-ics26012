@@ -15,6 +15,28 @@ export default function SJF() {
   // store these variables as state
   const [numOfProcess, setNumOfProcess] = useState<string>("");
   const [processes, setProcesses] = useState<SJFProcess[]>([]);
+  const [results, setResults] = useState<
+    { at: number; bt: number; name: string; wt: number; tt: number }[]
+  >([]);
+  const [averages, setAverages] = useState<number[]>([]);
+
+  useEffect(() => {
+    setResults([]);
+  }, [processes]);
+
+  useEffect(() => {
+    let averages = [0, 0];
+
+    results.forEach((process) => {
+      averages[0] += process.wt;
+      averages[1] += process.tt;
+    });
+
+    averages[0] = averages[0] / results.length;
+    averages[1] = averages[1] / results.length;
+
+    setAverages(averages);
+  }, [results]);
 
   // after clicking the OK button, populate the proccesses[] with
   // empty SJFProcess object
@@ -106,6 +128,16 @@ export default function SJF() {
 
       currentTime += selectProcess.bt;
     }
+
+    // calculate waiting times and turnaround times
+    let time = scheduledQueue[0].at;
+    for (let process of scheduledQueue) {
+      process.wt = time - process.at;
+      time += process.bt;
+      process.tt = time - process.at;
+    }
+
+    setResults(scheduledQueue);
   };
 
   return (
@@ -137,34 +169,78 @@ export default function SJF() {
         <p className="font-bold">Burst Time</p>
       </div>
 
-      {processes.map((process, i) => (
-        <div key={i} className="my-2 grid grid-cols-3">
-          <p>P{i}</p>
-          <input
-            type="number"
-            className="remove_arrow w-1/2 rounded-md border px-2"
-            placeholder={`AT for P${i}`}
-            value={processes[i].at}
-            onChange={(e) => handleATChange(i, e.target.value)}
-          />
-          <input
-            type="number"
-            className="remove_arrow w-1/2 rounded-md border px-2"
-            placeholder={`BT for P${i}`}
-            value={processes[i].bt}
-            onChange={(e) => handleBTChange(i, e.target.value)}
-          />
-        </div>
-      ))}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          calculateSJF();
+        }}
+        className="mb-16"
+      >
+        {processes.map((process, i) => (
+          <div key={i} className="my-2 grid grid-cols-3">
+            <p>P{i}</p>
+            <input
+              type="number"
+              required
+              className="remove_arrow w-1/2 rounded-md border px-2"
+              placeholder={`AT for P${i}`}
+              value={processes[i].at}
+              onChange={(e) => handleATChange(i, e.target.value)}
+            />
+            <input
+              type="number"
+              required
+              className="remove_arrow w-1/2 rounded-md border px-2"
+              placeholder={`BT for P${i}`}
+              value={processes[i].bt}
+              onChange={(e) => handleBTChange(i, e.target.value)}
+            />
+          </div>
+        ))}
 
-      {processes.length > 0 && (
-        <button
-          type="button"
-          className="rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-700"
-          onClick={calculateSJF}
-        >
-          Calculate
-        </button>
+        {processes.length > 0 && (
+          <button
+            type="submit"
+            className="rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-700"
+          >
+            Calculate
+          </button>
+        )}
+      </form>
+
+      {results.length !== 0 && (
+        <div className="rounded-3xl border border-blue-200 p-8 shadow-lg">
+          <h2 className="mb-2 text-2xl font-bold text-blue-600">Results</h2>
+
+          <table className="my-8 w-1/2 min-w-fit text-left ">
+            <thead>
+              <tr className="grid grid-cols-3">
+                <th>PID</th>
+                <th>Waiting Time</th>
+                <th>Turnaround Time</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {results.map((process) => (
+                <tr key={process.name} className="grid grid-cols-3">
+                  <td>{process.name}</td>
+                  <td>{process.wt}</td>
+                  <td>{process.tt}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <p>
+            Average waiting time:{" "}
+            <span className="font-bold">{averages[0]} ms</span>
+          </p>
+          <p>
+            Average turnaround{" "}
+            <span className="font-bold">{averages[1]} ms</span>
+          </p>
+        </div>
       )}
     </>
   );
