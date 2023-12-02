@@ -160,7 +160,7 @@ export default function SJF() {
         />
         <button
           type="submit"
-          className="rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-700"
+          className="rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-700 active:bg-black"
         >
           OK
         </button>
@@ -193,7 +193,7 @@ export default function SJF() {
             />
             <input
               type="number"
-              min={0}
+              min={1}
               required
               className="remove_arrow w-1/2 rounded-md border px-2"
               placeholder={`BT for P${i}`}
@@ -206,7 +206,7 @@ export default function SJF() {
         {processes.length > 0 && (
           <button
             type="submit"
-            className="rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-700"
+            className="rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-700 active:bg-black"
           >
             Calculate
           </button>
