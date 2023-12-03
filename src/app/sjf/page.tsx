@@ -242,7 +242,7 @@ export default function SJF() {
             <span className="font-bold">{averages[0]} ms</span>
           </p>
           <p>
-            Average turnaround{" "}
+            Average turnaround:{" "}
             <span className="font-bold">{averages[1]} ms</span>
           </p>
         </div>
