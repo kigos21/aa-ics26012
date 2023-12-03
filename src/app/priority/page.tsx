@@ -134,10 +134,23 @@ export default function Priority() {
     const order: PrioProcess[] = [];
     let currentTime = 0;
 
-    while (true) {
-      let highestPriorityIndex = -1;
-      let highestPriority = Number.MAX_SAFE_INTEGER;
+    let processNames: string[] = [];
+    processes.forEach((process) => {
+      if (!processNames.includes(process.name)) {
+        processNames.push(process.name);
+      }
+    });
+    processNames.sort();
 
+    let orderNames: string[] = [];
+
+    while (true) {
+      console.log("Order length is now: " + order.length);
+
+      let highestPriorityIndex = -1;
+      let highestPriority = 9;
+
+      console.log("before for loop...");
       for (let i = 0; i < n; i++) {
         if (
           processes[i].at <= currentTime &&
@@ -149,7 +162,18 @@ export default function Priority() {
         }
       }
 
+      console.log("before for priorityIndex");
       if (highestPriorityIndex === -1) {
+        console.log("before for JSON stringify check...");
+        if (
+          JSON.stringify(processNames) !== JSON.stringify(orderNames) ||
+          order[order.length - 1].remain !== 0
+        ) {
+          console.log("incrementing time" + currentTime);
+          currentTime += 1;
+          continue;
+        }
+
         // No process is ready to execute
         break;
       }
@@ -178,6 +202,12 @@ export default function Priority() {
         wt: currentProcess.wt,
         tt: currentProcess.tt,
       });
+
+      console.log("before for pushing order name...");
+      if (!orderNames.includes(currentProcess.name)) {
+        orderNames.push(currentProcess.name);
+      }
+      orderNames.sort();
     }
 
     return order;
@@ -206,7 +236,6 @@ export default function Priority() {
     const schedulingOrder = preemptivePriorityScheduling(parsedProcesses);
     const optimizedOrder = optimizeResults(schedulingOrder);
 
-    console.log(optimizedOrder);
     setResults(optimizedOrder);
   };
 
