@@ -1,22 +1,55 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
-// define PriorityProcess type, an object with AT, BT, and Priority
-type SJFProcess = {
+type PrioProcess = {
+  at: number;
+  bt: number;
+  prio: number;
+  remain: number;
   name: string;
-  at: string;
-  bt: string;
-  prio: string;
   rt: number;
   wt: number;
   tt: number;
 };
 
+type InputPrioProcess = {
+  name: string;
+  at: string;
+  bt: string;
+  prio: string;
+};
+
 export default function Priority() {
   // store these variables as state
   const [numOfProcess, setNumOfProcess] = useState<string>("");
-  const [processes, setProcesses] = useState<SJFProcess[]>([]);
+  const [processes, setProcesses] = useState<InputPrioProcess[]>([]);
+  const [results, setResults] = useState<PrioProcess[]>([]);
+  const [averages, setAverages] = useState<{
+    rt: number;
+    wt: number;
+    tt: number;
+  }>({ rt: 0, wt: 0, tt: 0 });
+
+  useEffect(() => {
+    setResults([]);
+  }, [processes]);
+
+  useEffect(() => {
+    let newAverages = { rt: 0, wt: 0, tt: 0 };
+
+    results.forEach((process) => {
+      newAverages.rt += process.rt;
+      newAverages.wt += process.wt;
+      newAverages.tt += process.tt;
+    });
+
+    newAverages.rt = newAverages.rt / results.length;
+    newAverages.wt = newAverages.wt / results.length;
+    newAverages.tt = newAverages.tt / results.length;
+
+    setAverages(newAverages);
+  }, [results]);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,7 +60,7 @@ export default function Priority() {
       return;
     }
 
-    const newProcesses: SJFProcess[] = [];
+    const newProcesses: InputPrioProcess[] = [];
     const j = Number(numOfProcess);
     for (let i = 0; i < j; i++) {
       newProcesses.push({
@@ -35,9 +68,6 @@ export default function Priority() {
         at: "",
         bt: "",
         prio: "",
-        rt: 0,
-        wt: 0,
-        tt: 0,
       });
     }
 
@@ -80,122 +110,104 @@ export default function Priority() {
     setProcesses(newProcesses);
   };
 
-  const calculatePriority = () => {
-    // Parse arrival times and burst times as integers
-    const parsedProcesses = processes.map((process) => ({
-      ...process,
-      at: Number(process.at),
-      bt: Number(process.bt),
-      prio: Number(process.prio),
-      remain: Number(process.bt), // include remaining time in preemptive mode
+  // Function to convert the input array to the desired format
+  function convertToPrioProcess(
+    inputProcesses: InputPrioProcess[],
+  ): PrioProcess[] {
+    return inputProcesses.map((process, index) => ({
+      at: parseInt(process.at),
+      bt: parseInt(process.bt),
+      prio: parseInt(process.prio),
+      remain: parseInt(process.bt),
+      name: process.name,
+      rt: 0,
+      wt: 0,
+      tt: 0,
     }));
+  }
 
-    // Sort processes based on arrival time
-    const sortedProcesses = parsedProcesses.sort((a, b) => a.at - b.at);
-
-    // Initialize variables for turnaround time and waiting time
+  // Function for Preemptive Priority CPU Scheduling
+  function preemptivePriorityScheduling(
+    processes: PrioProcess[],
+  ): PrioProcess[] {
+    const n = processes.length;
+    const order: PrioProcess[] = [];
     let currentTime = 0;
-    let scheduledQueue: {
-      at: number;
-      bt: number;
-      prio: number;
-      remain: number;
-      name: string;
-      rt: number;
-      wt: number;
-      tt: number;
-    }[] = [];
-    let waitingQueue = [];
-    let selectProcess;
-    let done: boolean = false;
 
     while (true) {
-      if (scheduledQueue.length !== 0) {
-        let processesNames = [];
-        for (let process of processes) {
-          processesNames.push(process.name);
-        }
+      let highestPriorityIndex = -1;
+      let highestPriority = Number.MAX_SAFE_INTEGER;
 
-        processesNames.sort();
-
-        let scheduledNames: any[] = [];
-        for (let process of scheduledQueue) {
-          if (!scheduledNames.includes(process.name)) {
-            scheduledNames.push(process.name);
-          }
-        }
-
-        scheduledNames.sort();
-
-        // if scheduledNames does not include every processes yet, continue
-        if (JSON.stringify(processesNames) === JSON.stringify(scheduledNames)) {
-          done = true;
-
-          for (let i = 0; i < scheduledQueue.length; i++) {
-            if (scheduledQueue[i].remain !== 0) {
-              done = false;
-              break;
-            }
-          }
+      for (let i = 0; i < n; i++) {
+        if (
+          processes[i].at <= currentTime &&
+          processes[i].remain > 0 &&
+          processes[i].prio < highestPriority
+        ) {
+          highestPriority = processes[i].prio;
+          highestPriorityIndex = i;
         }
       }
 
-      if (done) {
+      if (highestPriorityIndex === -1) {
+        // No process is ready to execute
         break;
       }
 
-      // prepare waiting queue by pushing the process with arrival time equal to the current time
-      // and popping the process from the sorted processes to avoid duplication
-      let i = 0;
-      while (i < sortedProcesses.length) {
-        if (sortedProcesses[i].at === currentTime) {
-          waitingQueue.push(sortedProcesses.at(i));
-          sortedProcesses.splice(i, 1);
-          continue; // we continue and not increment index, because items will shift to the left after popping the item at index [i]
-        }
+      const currentProcess = processes[highestPriorityIndex];
 
-        i += 1;
+      if (currentProcess.rt === 0) {
+        currentProcess.rt = currentTime - currentProcess.at;
       }
 
-      if (selectProcess !== undefined && selectProcess.remain !== 0) {
-        waitingQueue.push(selectProcess);
+      currentTime++;
+      currentProcess.remain--;
+
+      if (currentProcess.remain === 0) {
+        currentProcess.tt = currentTime - currentProcess.at;
+        currentProcess.wt = currentProcess.tt - currentProcess.bt;
       }
 
-      // if waiting queue is empty, increment time and go back to while loop start
-      if (waitingQueue.length === 0) {
-        currentTime += 1;
-        continue;
-      }
-
-      // sort waiting queue based on process.priority
-      waitingQueue.sort((a, b) => a!!.prio - b!!.prio);
-
-      // execute priority process until new process arrives
-      selectProcess = waitingQueue[0]!!;
-      selectProcess.remain = selectProcess.remain - 1;
-
-      if (scheduledQueue.length === 0) {
-        scheduledQueue.push(selectProcess);
-        waitingQueue.splice(0, 1);
-        currentTime += 1;
-        continue;
-      }
-
-      if (
-        selectProcess.name === scheduledQueue[scheduledQueue.length - 1].name
-      ) {
-        scheduledQueue[scheduledQueue.length - 1] = selectProcess;
-      } else {
-        scheduledQueue.push(selectProcess);
-      }
-      waitingQueue.splice(0, 1);
-
-      currentTime += 1;
+      order.push({
+        name: currentProcess.name,
+        at: currentProcess.at,
+        bt: currentProcess.bt,
+        prio: currentProcess.prio,
+        remain: currentProcess.remain,
+        rt: currentProcess.rt,
+        wt: currentProcess.wt,
+        tt: currentProcess.tt,
+      });
     }
 
-    for (let process of scheduledQueue) {
-      console.log(process);
+    return order;
+  }
+
+  const optimizeResults = (prioProcesses: PrioProcess[]) => {
+    let order: PrioProcess[] = [];
+
+    let n = processes.length;
+    for (let i = 0; i < n; i++) {
+      let processById: PrioProcess[] = prioProcesses.filter(
+        (process) => process.name === `P${i}`,
+      );
+
+      let firstProcess = processById[0];
+      let lastIndex = processById.length - 1;
+      let lastProcess = processById[lastIndex];
+      order.push({ ...lastProcess, rt: firstProcess.rt });
     }
+
+    return order;
+  };
+
+  const calculatePriority = () => {
+    const parsedProcesses = convertToPrioProcess(processes);
+    const schedulingOrder = preemptivePriorityScheduling(parsedProcesses);
+    const optimizedOrder = optimizeResults(schedulingOrder);
+
+    console.log(optimizedOrder);
+    setResults(optimizedOrder);
   };
 
   return (
@@ -279,14 +291,15 @@ export default function Priority() {
         )}
       </form>
 
-      {/* {results.length !== 0 && (
+      {results.length !== 0 && (
         <div className="rounded-3xl border border-blue-200 p-8 shadow-lg">
           <h2 className="mb-2 text-2xl font-bold text-blue-600">Results</h2>
 
           <table className="my-8 w-1/2 min-w-fit text-left ">
             <thead>
-              <tr className="grid grid-cols-3">
+              <tr className="grid grid-cols-4">
                 <th>PID</th>
+                <th>Response Time</th>
                 <th>Waiting Time</th>
                 <th>Turnaround Time</th>
               </tr>
@@ -294,8 +307,9 @@ export default function Priority() {
 
             <tbody>
               {results.map((process) => (
-                <tr key={process.name} className="grid grid-cols-3">
+                <tr key={process.name} className="grid grid-cols-4">
                   <td>{process.name}</td>
+                  <td>{process.rt}</td>
                   <td>{process.wt}</td>
                   <td>{process.tt}</td>
                 </tr>
@@ -304,15 +318,19 @@ export default function Priority() {
           </table>
 
           <p>
+            Average response time:{" "}
+            <span className="font-bold">{averages.rt} ms</span>
+          </p>
+          <p>
             Average waiting time:{" "}
-            <span className="font-bold">{averages[0]} ms</span>
+            <span className="font-bold">{averages.wt} ms</span>
           </p>
           <p>
             Average turnaround{" "}
-            <span className="font-bold">{averages[1]} ms</span>
+            <span className="font-bold">{averages.tt} ms</span>
           </p>
         </div>
-      )} */}
+      )}
     </>
   );
 }
