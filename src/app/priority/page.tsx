@@ -148,7 +148,7 @@ export default function Priority() {
       console.log("Order length is now: " + order.length);
 
       let highestPriorityIndex = -1;
-      let highestPriority = 9;
+      let highestPriority = 10;
 
       console.log("before for loop...");
       for (let i = 0; i < n; i++) {
@@ -248,7 +248,7 @@ export default function Priority() {
       <form action="" onSubmit={(e) => handleSubmit(e)} className="flex gap-1">
         <input
           type="number"
-          className="remove_arrow rounded-md border px-2"
+          className="remove_arrow rounded-md border px-2 py-1"
           placeholder="Enter number of processes"
           required
           value={numOfProcess}
@@ -283,7 +283,7 @@ export default function Priority() {
               type="number"
               min={0}
               required
-              className="remove_arrow w-1/2 rounded-md border px-2"
+              className="remove_arrow w-1/2 rounded-md border px-2 py-1"
               placeholder={`AT for P${i}`}
               value={processes[i].at}
               onChange={(e) => handleATChange(i, e.target.value)}
@@ -292,7 +292,7 @@ export default function Priority() {
               type="number"
               min={1}
               required
-              className="remove_arrow w-1/2 rounded-md border px-2"
+              className="remove_arrow w-1/2 rounded-md border px-2 py-1"
               placeholder={`BT for P${i}`}
               value={processes[i].bt}
               onChange={(e) => handleBTChange(i, e.target.value)}
@@ -302,7 +302,7 @@ export default function Priority() {
               min={1}
               max={9}
               required
-              className="remove_arrow w-1/2 rounded-md border px-2"
+              className="remove_arrow w-1/2 rounded-md border px-2  py-1"
               placeholder="1 - 9"
               value={processes[i].prio}
               onChange={(e) => handlePrioChange(i, e.target.value)}
@@ -348,15 +348,15 @@ export default function Priority() {
 
           <p>
             Average response time:{" "}
-            <span className="font-bold">{averages.rt} ms</span>
+            <span className="font-bold">{averages.rt.toFixed(2)} ms</span>
           </p>
           <p>
             Average waiting time:{" "}
-            <span className="font-bold">{averages.wt} ms</span>
+            <span className="font-bold">{averages.wt.toFixed(2)} ms</span>
           </p>
           <p>
             Average turnaround{" "}
-            <span className="font-bold">{averages.tt} ms</span>
+            <span className="font-bold">{averages.tt.toFixed(2)} ms</span>
           </p>
         </div>
       )}
