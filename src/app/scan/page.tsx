@@ -137,7 +137,9 @@ export default function Scan() {
             <input
               type="number"
               id="trackSize"
-              className="remove_arrow mt-1 w-full rounded-md border px-2 py-1"
+              className={`remove_arrow mt-1 w-full rounded-md border px-2 py-1 ${
+                errors.trackSize && "border-red-600"
+              }`}
               placeholder="64 - 246"
               {...register("trackSize", {
                 required: true,
@@ -158,7 +160,9 @@ export default function Scan() {
             <input
               type="number"
               id="seekRate"
-              className="remove_arrow mt-1 w-full rounded-md border px-2 py-1"
+              className={`remove_arrow mt-1 w-full rounded-md border px-2 py-1 ${
+                errors.seekRate && "border-red-600"
+              }`}
               placeholder="e.g. 4"
               {...register("seekRate", { required: true, min: 1 })}
             />
@@ -174,7 +178,9 @@ export default function Scan() {
             <input
               type="number"
               id="currentPosition"
-              className="remove_arrow mt-1 w-full rounded-md border px-2 py-1"
+              className={`remove_arrow mt-1 w-full rounded-md border px-2 py-1 ${
+                errors.currentPosition && "border-red-600"
+              }`}
               placeholder={`e.g. 10`}
               {...register("currentPosition", {
                 required: true,
@@ -194,7 +200,9 @@ export default function Scan() {
             <input
               type="text"
               id="requests"
-              className="remove_arrow mt-1 w-full rounded-md border px-2 py-1"
+              className={`remove_arrow mt-1 w-full rounded-md border px-2 py-1 ${
+                errors.requests && "border-red-600"
+              }`}
               placeholder="e.g. 0 2 4 6 8"
               {...register("requests", {
                 required: true,
@@ -238,7 +246,9 @@ export default function Scan() {
               </p>
               <p>
                 Seek Time:{" "}
-                <span className="font-bold">{result.seekTime} ms</span>
+                <span className="font-bold">
+                  {result.seekTime.toFixed(2)} ms
+                </span>
               </p>
             </>
           )}
