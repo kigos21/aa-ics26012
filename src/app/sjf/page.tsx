@@ -152,7 +152,7 @@ export default function SJF() {
       <form action="" onSubmit={(e) => handleSubmit(e)} className="flex gap-1">
         <input
           type="number"
-          className="remove_arrow rounded-md border px-2"
+          className="remove_arrow rounded-md border px-2 py-1"
           placeholder="Enter number of processes"
           required
           value={numOfProcess}
@@ -186,7 +186,7 @@ export default function SJF() {
               type="number"
               min={0}
               required
-              className="remove_arrow w-1/2 rounded-md border px-2"
+              className="remove_arrow w-1/2 rounded-md border px-2 py-1"
               placeholder={`AT for P${i}`}
               value={processes[i].at}
               onChange={(e) => handleATChange(i, e.target.value)}
@@ -195,7 +195,7 @@ export default function SJF() {
               type="number"
               min={1}
               required
-              className="remove_arrow w-1/2 rounded-md border px-2"
+              className="remove_arrow w-1/2 rounded-md border px-2 py-1"
               placeholder={`BT for P${i}`}
               value={processes[i].bt}
               onChange={(e) => handleBTChange(i, e.target.value)}
@@ -239,11 +239,11 @@ export default function SJF() {
 
           <p>
             Average waiting time:{" "}
-            <span className="font-bold">{averages[0]} ms</span>
+            <span className="font-bold">{averages[0].toFixed(2)} ms</span>
           </p>
           <p>
             Average turnaround:{" "}
-            <span className="font-bold">{averages[1]} ms</span>
+            <span className="font-bold">{averages[1].toFixed(2)} ms</span>
           </p>
         </div>
       )}
