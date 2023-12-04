@@ -106,7 +106,9 @@ export default function Scan() {
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    let requests: number[] | string[] = data.requests.split(" ");
+    let requests: number[] | string[] = data.requests
+      .split(" ")
+      .filter((value) => value != "");
     requests = requests.map((request) => Number(request));
 
     const result = Scan(
@@ -158,11 +160,11 @@ export default function Scan() {
               id="seekRate"
               className="remove_arrow mt-1 w-full rounded-md border px-2 py-1"
               placeholder="e.g. 4"
-              {...register("seekRate", { required: true, min: 0 })}
+              {...register("seekRate", { required: true, min: 1 })}
             />
             {errors.seekRate && (
               <p className="px-1 py-2 text-xs text-red-600">
-                This field is required: minimum of 0
+                This field is required: minimum of 1
               </p>
             )}
 
@@ -197,7 +199,9 @@ export default function Scan() {
               {...register("requests", {
                 required: true,
                 validate: (value) => {
-                  const values: string[] = value.split(" ");
+                  const values: string[] = value
+                    .split(" ")
+                    .filter((value) => value != "");
                   for (let n of values) {
                     if (Number(n) < 0 || Number(n) > trackSize) {
                       return false;
