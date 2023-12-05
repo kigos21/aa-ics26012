@@ -129,15 +129,17 @@ export default function Scan() {
 
   return (
     <>
-      <h1 className="mb-2 text-4xl font-bold text-blue-600">Scan</h1>
+      <h1 className="mb-4 font-mono text-4xl font-bold text-stone-950">Scan</h1>
       <div className="grid grid-cols-2 gap-4">
-        <div className="rounded-3xl border border-blue-200 p-8 shadow-lg">
+        <div className="rounded-3xl border-8 border-amber-800 bg-amber-200 p-10 shadow-lg">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <label htmlFor="trackSize">Track Size</label>
+            <label htmlFor="trackSize" className="font-bold">
+              Track Size
+            </label>
             <input
               type="number"
               id="trackSize"
-              className={`remove_arrow mt-1 w-full rounded-md border px-2 py-1 ${
+              className={`remove_arrow mt-1 w-full rounded-md border-4 border-amber-800 px-2 py-1 ${
                 errors.trackSize && "border-red-600"
               }`}
               placeholder="64 - 246"
@@ -154,13 +156,13 @@ export default function Scan() {
               </p>
             )}
 
-            <label htmlFor="seekRate" className="mt-5 block">
+            <label htmlFor="seekRate" className="mt-5 block font-bold">
               Seek Rate
             </label>
             <input
               type="number"
               id="seekRate"
-              className={`remove_arrow mt-1 w-full rounded-md border px-2 py-1 ${
+              className={`remove_arrow mt-1 w-full rounded-md border-4 border-amber-800 px-2 py-1 ${
                 errors.seekRate && "border-red-600"
               }`}
               placeholder="e.g. 4"
@@ -172,13 +174,13 @@ export default function Scan() {
               </p>
             )}
 
-            <label htmlFor="currentPosition" className="mt-5 block">
+            <label htmlFor="currentPosition" className="mt-5 block font-bold">
               Current Position
             </label>
             <input
               type="number"
               id="currentPosition"
-              className={`remove_arrow mt-1 w-full rounded-md border px-2 py-1 ${
+              className={`remove_arrow mt-1 w-full rounded-md border-4 border-amber-800 px-2 py-1 ${
                 errors.currentPosition && "border-red-600"
               }`}
               placeholder={`e.g. 10`}
@@ -194,13 +196,13 @@ export default function Scan() {
               </p>
             )}
 
-            <label htmlFor="requests" className="mt-5 block">
+            <label htmlFor="requests" className="mt-5 block font-bold">
               Location Requests
             </label>
             <input
               type="text"
               id="requests"
-              className={`remove_arrow mt-1 w-full rounded-md border px-2 py-1 ${
+              className={`remove_arrow mt-1 w-full rounded-md border-4 border-amber-800 px-2 py-1 ${
                 errors.requests && "border-red-600"
               }`}
               placeholder="e.g. 0 2 4 6 8"
@@ -229,15 +231,17 @@ export default function Scan() {
 
             <button
               type="submit"
-              className="mt-5 rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-700 active:bg-black"
+              className="mt-6 rounded-md bg-amber-800 px-2 py-1 text-white hover:bg-orange-600 active:bg-black"
             >
               Calculate
             </button>
           </form>
         </div>
 
-        <div className="rounded-3xl border border-blue-200 p-8 shadow-lg">
-          <p className="text-xl font-bold">Results</p>
+        <div className="rounded-3xl border-8 border-amber-800 bg-amber-200 p-10 shadow-lg">
+          <p className="mb-3 font-mono text-2xl font-bold text-stone-950">
+            Results
+          </p>
           {result.totalHeadMovement !== 0 && (
             <>
               <p>

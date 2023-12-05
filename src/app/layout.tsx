@@ -17,29 +17,29 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-amber-300`}>
         {/* NAVBAR */}
         <header>
-          <nav className="bg-blue-50">
+          <nav className="bg-amber-800">
             <ul className="flex justify-center gap-12 px-8 py-4">
               <li>
-                <Link href="/" className="hover:text-blue-600">
-                  Home
+                <Link href="/" className="hover:text-orange-600">
+                  <b>Home</b>
                 </Link>
               </li>
               <li>
-                <Link href="/sjf" className="hover:text-blue-600">
-                  Shortest Job First
+                <Link href="/sjf" className="hover:text-orange-600">
+                  <b>Shortest Job First</b>
                 </Link>
               </li>
               <li>
-                <Link href="/priority" className="hover:text-blue-600">
-                  Preemptive Priority
+                <Link href="/priority" className="hover:text-orange-600">
+                  <b>Preemptive Priority</b>
                 </Link>
               </li>
               <li>
-                <Link href="/scan" className="hover:text-blue-600">
-                  Scan
+                <Link href="/scan" className="hover:text-orange-600">
+                  <b>Scan</b>
                 </Link>
               </li>
             </ul>

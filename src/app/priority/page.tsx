@@ -241,14 +241,14 @@ export default function Priority() {
 
   return (
     <>
-      <h1 className="mb-2 text-4xl font-bold text-blue-600">
+      <h1 className="mb-6 font-mono text-4xl font-bold text-stone-950">
         Preemptive Priority
       </h1>
 
       <form action="" onSubmit={(e) => handleSubmit(e)} className="flex gap-1">
         <input
           type="number"
-          className="remove_arrow rounded-md border px-2 py-1"
+          className="remove_arrow rounded-md border-4 border-amber-800 px-2 py-1"
           placeholder="Enter number of processes"
           required
           value={numOfProcess}
@@ -256,13 +256,13 @@ export default function Priority() {
         />
         <button
           type="submit"
-          className="rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-700 active:bg-black"
+          className="ml-2 rounded-md bg-amber-800 px-2 py-1 text-white hover:bg-orange-600 active:bg-black"
         >
           OK
         </button>
       </form>
 
-      <div className="mt-8 grid grid-cols-4">
+      <div className="mb-5 mt-8 grid grid-cols-4">
         <p className="font-bold">Process</p>
         <p className="font-bold">Arrival Time</p>
         <p className="font-bold">Burst Time</p>
@@ -277,13 +277,13 @@ export default function Priority() {
         className="mb-16"
       >
         {processes.map((process, i) => (
-          <div key={i} className="my-2 grid grid-cols-4">
+          <div key={i} className="my-2 mb-5 grid grid-cols-4">
             <p>P{i}</p>
             <input
               type="number"
               min={0}
               required
-              className="remove_arrow w-1/2 rounded-md border px-2 py-1"
+              className="remove_arrow w-1/2 rounded-md border-4 border-amber-800 px-2 py-1"
               placeholder={`AT for P${i}`}
               value={processes[i].at}
               onChange={(e) => handleATChange(i, e.target.value)}
@@ -292,7 +292,7 @@ export default function Priority() {
               type="number"
               min={1}
               required
-              className="remove_arrow w-1/2 rounded-md border px-2 py-1"
+              className="remove_arrow w-1/2 rounded-md border-4 border-amber-800 px-2 py-1"
               placeholder={`BT for P${i}`}
               value={processes[i].bt}
               onChange={(e) => handleBTChange(i, e.target.value)}
@@ -302,7 +302,7 @@ export default function Priority() {
               min={1}
               max={9}
               required
-              className="remove_arrow w-1/2 rounded-md border px-2  py-1"
+              className="remove_arrow w-1/2 rounded-md border-4 border-amber-800 px-2 py-1"
               placeholder="1 - 9"
               value={processes[i].prio}
               onChange={(e) => handlePrioChange(i, e.target.value)}
@@ -313,7 +313,7 @@ export default function Priority() {
         {processes.length > 0 && (
           <button
             type="submit"
-            className="rounded-md bg-blue-600 px-2 py-1 text-white hover:bg-blue-700 active:bg-black"
+            className="mt-2 rounded-md bg-amber-800 px-2 py-1 text-white hover:bg-orange-600 active:bg-black"
           >
             Calculate
           </button>
@@ -321,8 +321,10 @@ export default function Priority() {
       </form>
 
       {results.length !== 0 && (
-        <div className="rounded-3xl border border-blue-200 p-8 shadow-lg">
-          <h2 className="mb-2 text-2xl font-bold text-blue-600">Results</h2>
+        <div className="rounded-3xl border-8 border-amber-800 bg-amber-200 p-10 shadow-lg">
+          <h2 className="mb-2 font-mono text-2xl font-bold text-stone-950">
+            Results
+          </h2>
 
           <table className="my-8 w-1/2 min-w-fit text-left ">
             <thead>
