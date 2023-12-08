@@ -357,7 +357,7 @@ export default function Priority() {
             <span className="font-bold">{averages.wt.toFixed(2)} ms</span>
           </p>
           <p>
-            Average turnaround{" "}
+            Average turnaround time:{" "}
             <span className="font-bold">{averages.tt.toFixed(2)} ms</span>
           </p>
         </div>

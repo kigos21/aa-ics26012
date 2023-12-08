@@ -142,7 +142,7 @@ export default function Scan() {
               className={`remove_arrow mt-1 w-full rounded-md border-4 border-amber-800 px-2 py-1 ${
                 errors.trackSize && "border-red-600"
               }`}
-              placeholder="64 - 246"
+              placeholder="64 - 256"
               {...register("trackSize", {
                 required: true,
                 min: 64,

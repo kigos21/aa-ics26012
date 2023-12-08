@@ -243,7 +243,7 @@ export default function SJF() {
             <span className="font-bold">{averages[0].toFixed(2)} ms</span>
           </p>
           <p>
-            Average turnaround:{" "}
+            Average turnaround time:{" "}
             <span className="font-bold">{averages[1].toFixed(2)} ms</span>
           </p>
         </div>
